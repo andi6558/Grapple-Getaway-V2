@@ -18,6 +18,7 @@ namespace Platformer.Mechanics
         public AudioClip respawnAudio;
         public AudioClip ouchAudio;
 
+
         /// <summary>
         /// Max horizontal speed of the player.
         /// </summary>
@@ -26,6 +27,8 @@ namespace Platformer.Mechanics
         /// Initial jump velocity at the start of a jump.
         /// </summary>
         public float jumpTakeOffSpeed = 7;
+
+        public bool isSwinging;
 
         public JumpState jumpState = JumpState.Grounded;
         private bool stopJump;
@@ -70,6 +73,8 @@ namespace Platformer.Mechanics
             }
             UpdateJumpState();
             base.Update();
+
+           
         }
 
         void UpdateJumpState()

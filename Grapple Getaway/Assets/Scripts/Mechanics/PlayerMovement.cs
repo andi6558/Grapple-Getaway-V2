@@ -79,7 +79,7 @@ namespace Platformer.Mechanics
                 else
                 {
                     animator.SetBool("IsSwinging", false);
-                    if (groundCheck)
+                    if (!isSwinging)
                     {
                         var groundForce = speed * 2f;
                         rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));

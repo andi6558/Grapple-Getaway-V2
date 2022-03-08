@@ -111,7 +111,9 @@ namespace Platformer.Mechanics
                     {
                         
                         // Jump slightly to distance the player a little from the ground after grappling to something.
-                        transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 2f), ForceMode2D.Impulse);
+                        var ropeDirection = (hit.point - playerPosition).normalized;
+                        //new Vector2(0f, 2f) + 
+                        transform.GetComponent<Rigidbody2D>().AddForce(ropeDirection, ForceMode2D.Impulse);
                         ropePositions.Add(hit.point);
                         ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
                         ropeJoint.enabled = true;

@@ -1407,7 +1407,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.35944533, y: 0.16731897, z: -10}
+  m_LocalPosition: {x: 1.0645287, y: 0.17257991, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2278,7 +2278,7 @@ GameObject:
   - component: {fileID: 1046970085}
   - component: {fileID: 1046970084}
   - component: {fileID: 1046970083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TileGround (2)
   m_TagString: Wall
   m_Icon: {fileID: 0}

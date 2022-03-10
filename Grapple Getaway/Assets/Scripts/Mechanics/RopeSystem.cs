@@ -96,14 +96,7 @@ namespace Platformer.Mechanics
             }
             if(cooldownTimer >= 1)
                 cooldownTimer -= 1;
-            // if(cooldownTimer2 >= 1)
-            //     cooldownTimer2 -= 1;
         }
-
-        // private void OnCollisionEnter2D(Collision2D other) {
-        //     if(grappleTime >= 0)
-        //         ResetRope();
-        // }
 
         private void SetCrosshairPosition(float aimAngle)
         {

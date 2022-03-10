@@ -11,6 +11,9 @@ namespace Platformer.Mechanics
 
         public float climbSpeed = 3f;
         private bool isColliding;
+        private float grappleTime = 500;
+        private float zipMult = 10;
+        private bool reeling = false;
 
         public GameObject ropeHingeAnchor;
         public DistanceJoint2D ropeJoint;
@@ -75,6 +78,7 @@ namespace Platformer.Mechanics
             HandleInput(aimDirection);
             UpdateRopePositions();
             HandleRopeLength();
+            grappleTime -= 1;
 
         }
 
@@ -103,17 +107,12 @@ namespace Platformer.Mechanics
 
                 var hit = Physics2D.Raycast(playerPosition, aimDirection, ropeMaxCastDistance, ropeLayerMask);
 
-                Debug.Log(hit.collider.name);
                 if (hit.collider != null)
                 {
                     ropeAttached = true;
                     if (!ropePositions.Contains(hit.point))
                     {
-                        
-                        // Jump slightly to distance the player a little from the ground after grappling to something.
-                        var ropeDirection = (hit.point - playerPosition).normalized;
-                        //new Vector2(0f, 2f) + 
-                        transform.GetComponent<Rigidbody2D>().AddForce(ropeDirection, ForceMode2D.Impulse);
+
                         ropePositions.Add(hit.point);
                         ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
                         ropeJoint.enabled = true;
@@ -129,6 +128,39 @@ namespace Platformer.Mechanics
                 }
             }
 
+            if (Input.GetMouseButton(1))
+            {
+                reeling = true;
+                grappleTime = 500;
+                if (ropeAttached) return;
+                ropeRenderer.enabled = true;
+
+                var hit = Physics2D.Raycast(playerPosition, aimDirection, ropeMaxCastDistance, ropeLayerMask);
+
+
+                if (hit.collider != null)
+                {
+                    ropeAttached = true;
+                    if (!ropePositions.Contains(hit.point))
+                    {
+
+
+                        ropePositions.Add(hit.point);
+                        ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
+                        ropeJoint.enabled = true;
+                        ropeHingeAnchorSprite.enabled = true;
+                    }
+                }
+
+                else
+                {
+                    ropeRenderer.enabled = false;
+                    ropeAttached = false;
+                    ropeJoint.enabled = false;
+                    reeling = false;
+                }
+            }
+
             if (Input.GetAxis("Jump") != 0)
             {
                 ResetRope();
@@ -138,6 +170,8 @@ namespace Platformer.Mechanics
         
         private void ResetRope()
         {
+            reeling = false;
+            grappleTime = 500;
             ropeJoint.enabled = false;
             ropeAttached = false;
             playerMovement.isSwinging = false;
@@ -220,6 +254,10 @@ namespace Platformer.Mechanics
             else if (Input.GetAxis("Vertical") < 0f && ropeAttached)
             {
                 ropeJoint.distance += Time.deltaTime * climbSpeed;
+            }
+            else if (grappleTime > 0 && reeling)
+            {
+                ropeJoint.distance -= Time.deltaTime * climbSpeed * zipMult;
             }
         }
 

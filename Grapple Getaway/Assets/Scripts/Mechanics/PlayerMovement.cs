@@ -31,7 +31,7 @@ namespace Platformer.Mechanics
             var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
             int layerMask = (LayerMask.GetMask("Ground"));
             groundCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - halfHeight - 0.04f), Vector2.down, 0.025f, layerMask);
-            Debug.Log(groundCheck);
+
             float friction = 0.01f;
 
 

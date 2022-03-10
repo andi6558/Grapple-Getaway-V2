@@ -126,7 +126,7 @@ namespace Platformer.Mechanics
             {
                 if(cooldownTimer2 != 0)
                     return;
-                cooldownTimer2 = maxGrappleCooldown / 2;
+                cooldownTimer2 = 0;
                 if (ropeAttached)
                     ResetRope("Cancel Swing Impulse");
                 ropeRenderer.enabled = true;

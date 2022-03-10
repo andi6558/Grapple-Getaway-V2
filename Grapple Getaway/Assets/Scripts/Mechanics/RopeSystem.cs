@@ -96,8 +96,8 @@ namespace Platformer.Mechanics
             }
             if(cooldownTimer >= 1)
                 cooldownTimer -= 1;
-            if(cooldownTimer2 >= 1)
-                cooldownTimer2 -= 1;
+            // if(cooldownTimer2 >= 1)
+            //     cooldownTimer2 -= 1;
         }
 
         // private void OnCollisionEnter2D(Collision2D other) {
@@ -125,8 +125,11 @@ namespace Platformer.Mechanics
             if (Input.GetMouseButton(0))
             {
                 if(cooldownTimer2 != 0)
+                {
+                    Debug.Log(cooldownTimer2);
                     return;
-                cooldownTimer2 = 0;
+                }
+                cooldownTimer2 = 10;
                 if (ropeAttached)
                     ResetRope("Cancel Swing Impulse");
                 ropeRenderer.enabled = true;
@@ -153,11 +156,18 @@ namespace Platformer.Mechanics
                     ropeJoint.enabled = false;
                 }
             }
+            else {
+                if(cooldownTimer2 >= 1)
+                    cooldownTimer2 -= 1;
+            }
+
 
             if (Input.GetMouseButton(1))
             {
-                if(cooldownTimer != 0)
+                if(cooldownTimer != 0) {
+                    Debug.Log(cooldownTimer);
                     return;
+                }
                 cooldownTimer = maxGrappleCooldown;
                 reeling = true;
                 grappleTime = maxGrappleTime;

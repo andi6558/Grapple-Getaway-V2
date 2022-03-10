@@ -192,6 +192,7 @@ namespace Platformer.Mechanics
 
                 else
                 {
+                    grappleTime = -1;
                     ropeRenderer.enabled = false;
                     ropeAttached = false;
                     ropeJoint.enabled = false;

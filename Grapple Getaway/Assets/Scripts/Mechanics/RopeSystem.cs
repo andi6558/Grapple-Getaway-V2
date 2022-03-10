@@ -129,7 +129,7 @@ namespace Platformer.Mechanics
                     Debug.Log(cooldownTimer2);
                     return;
                 }
-                cooldownTimer2 = 10;
+                cooldownTimer2 = 1;
                 if (ropeAttached)
                     ResetRope("Cancel Swing Impulse");
                 ropeRenderer.enabled = true;
@@ -235,7 +235,7 @@ namespace Platformer.Mechanics
                 Rigidbody2D rBody = this.GetComponent<Rigidbody2D>();
                 var x = rBody.velocity.x;
                 var y = Vector2.up;
-                // rBody.AddForce(y * x * 3f, ForceMode2D.Impulse);
+                rBody.AddForce(y * x * 2f, ForceMode2D.Impulse);
             }
         }
 

@@ -11,8 +11,12 @@ namespace Platformer.Mechanics
 
         public float climbSpeed = 3f;
         private bool isColliding;
-        private float grappleTime = 500;
-        private float zipMult = 10;
+        const int maxGrappleTime = 60;
+        const int maxGrappleCooldown = 500;
+        const float ImpulseMult = 12;
+        private int cooldownTimer;
+        private int grappleTime;
+        private float zipMult = 3;
         private bool reeling = false;
 
         public GameObject ropeHingeAnchor;
@@ -25,10 +29,12 @@ namespace Platformer.Mechanics
         private Rigidbody2D ropeHingeAnchorRb;
         private SpriteRenderer ropeHingeAnchorSprite;
 
+        private float lastJump;
+
 
         public LineRenderer ropeRenderer;
         public LayerMask ropeLayerMask;
-        private float ropeMaxCastDistance = 20f;
+        private float ropeMaxCastDistance = 10f;
         private List<Vector2> ropePositions = new List<Vector2>();
 
 
@@ -46,7 +52,6 @@ namespace Platformer.Mechanics
 
         void Update()
         {
-            
             var worldMousePosition =
                 Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f));
             var facingDirection = worldMousePosition - transform.position;
@@ -75,12 +80,27 @@ namespace Platformer.Mechanics
                 crosshairSprite.enabled = false;
             }
 
+            if (ropeAttached && grappleTime == -1 && ropeHingeAnchorRb.transform.position.y < transform.position.y - 2.0) {
+                ResetRope("Horizontal failure Impulse");
+            }
+
             HandleInput(aimDirection);
+            lastJump = Input.GetAxis("Jump");
             UpdateRopePositions();
             HandleRopeLength();
-            grappleTime -= 1;
-
+            if(grappleTime >= 0)
+                grappleTime -= 1;
+            if(grappleTime == 0) {
+                ResetRope("Grapple End Impulse");
+            }
+            if(cooldownTimer >= 1)
+                cooldownTimer -= 1;
         }
+
+        // private void OnCollisionEnter2D(Collision2D other) {
+        //     if(grappleTime >= 0)
+        //         ResetRope();
+        // }
 
         private void SetCrosshairPosition(float aimAngle)
         {
@@ -101,8 +121,8 @@ namespace Platformer.Mechanics
         {
             if (Input.GetMouseButton(0))
             {
-                
-                if (ropeAttached) return;
+                if (ropeAttached)
+                    ResetRope("Cancel Swing Impulse");
                 ropeRenderer.enabled = true;
 
                 var hit = Physics2D.Raycast(playerPosition, aimDirection, ropeMaxCastDistance, ropeLayerMask);
@@ -130,12 +150,16 @@ namespace Platformer.Mechanics
 
             if (Input.GetMouseButton(1))
             {
+                if(cooldownTimer != 0)
+                    return;
+                cooldownTimer = maxGrappleCooldown;
                 reeling = true;
-                grappleTime = 500;
-                if (ropeAttached) return;
+                grappleTime = maxGrappleTime;
+                if (ropeAttached && grappleTime == -1)
+                    ResetRope("Cancel Swinging Implse");
                 ropeRenderer.enabled = true;
 
-                var hit = Physics2D.Raycast(playerPosition, aimDirection, ropeMaxCastDistance, ropeLayerMask);
+                var hit = Physics2D.Raycast(playerPosition, aimDirection, ropeMaxCastDistance * 1.5f, ropeLayerMask);
 
 
                 if (hit.collider != null)
@@ -161,17 +185,17 @@ namespace Platformer.Mechanics
                 }
             }
 
-            if (Input.GetAxis("Jump") != 0)
+            if (ropeAttached && Input.GetAxis("Jump") != 0 && lastJump != Input.GetAxis("Jump"))
             {
-                ResetRope();
+                ResetRope("Manual Jump Cancel Impulse");
             }
         }
 
         
-        private void ResetRope()
+        private void ResetRope(string s = "Anonymous Impulse")
         {
             reeling = false;
-            grappleTime = 500;
+            // grappleTime = maxGrappleTime;
             ropeJoint.enabled = false;
             ropeAttached = false;
             playerMovement.isSwinging = false;
@@ -180,6 +204,25 @@ namespace Platformer.Mechanics
             ropeRenderer.SetPosition(1, transform.position);
             ropePositions.Clear();
             ropeHingeAnchorSprite.enabled = false;
+            if(grappleTime >= 0) {
+                Vector2 ropePosition = ropeHingeAnchorRb.transform.position;
+                Debug.Log(s);
+                // Debug.Log(grappleTime);
+                // Debug.Log(ropePosition);
+                // Debug.Log(playerPosition);
+                grappleTime = -1;
+                Vector2 playerPosition = transform.position;
+                Vector2 toAnchor = (ropePosition - playerPosition).normalized;
+                Rigidbody2D rBody = this.GetComponent<Rigidbody2D>();
+                rBody.AddForce(toAnchor * ImpulseMult, ForceMode2D.Impulse);
+            }
+            if(grappleTime == -1 && ropeAttached) {
+                Debug.Log(s);
+                Rigidbody2D rBody = this.GetComponent<Rigidbody2D>();
+                var x = rBody.velocity.x;
+                var y = Vector2.up;
+                rBody.AddForce(y * x * 3f, ForceMode2D.Impulse);
+            }
         }
 
 

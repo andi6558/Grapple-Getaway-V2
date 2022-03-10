@@ -6,6 +6,7 @@ TagManager:
   tags:
   - TutorialRequirement
   - Wall
+  - lava
   layers:
   - Default
   - TransparentFX

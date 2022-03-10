@@ -12,8 +12,8 @@ namespace Platformer.Mechanics
         public float climbSpeed = 3f;
         private bool isColliding;
         const int maxGrappleTime = 60;
-        const int maxGrappleCooldown = 500;
-        const float ImpulseMult = 12;
+        const int maxGrappleCooldown = 1250;
+        const float ImpulseMult = 8;
         private int cooldownTimer;
         private int cooldownTimer2;
         private int grappleTime;

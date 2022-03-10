@@ -15,6 +15,7 @@ namespace Platformer.Mechanics
         const int maxGrappleCooldown = 500;
         const float ImpulseMult = 12;
         private int cooldownTimer;
+        private int cooldownTimer2;
         private int grappleTime;
         private float zipMult = 3;
         private bool reeling = false;
@@ -95,6 +96,8 @@ namespace Platformer.Mechanics
             }
             if(cooldownTimer >= 1)
                 cooldownTimer -= 1;
+            if(cooldownTimer2 >= 1)
+                cooldownTimer2 -= 1;
         }
 
         // private void OnCollisionEnter2D(Collision2D other) {
@@ -121,6 +124,9 @@ namespace Platformer.Mechanics
         {
             if (Input.GetMouseButton(0))
             {
+                if(cooldownTimer2 != 0)
+                    return;
+                cooldownTimer2 = maxGrappleCooldown / 2;
                 if (ropeAttached)
                     ResetRope("Cancel Swing Impulse");
                 ropeRenderer.enabled = true;
@@ -167,8 +173,6 @@ namespace Platformer.Mechanics
                     ropeAttached = true;
                     if (!ropePositions.Contains(hit.point))
                     {
-
-
                         ropePositions.Add(hit.point);
                         ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
                         ropeJoint.enabled = true;
@@ -221,7 +225,7 @@ namespace Platformer.Mechanics
                 Rigidbody2D rBody = this.GetComponent<Rigidbody2D>();
                 var x = rBody.velocity.x;
                 var y = Vector2.up;
-                rBody.AddForce(y * x * 3f, ForceMode2D.Impulse);
+                // rBody.AddForce(y * x * 3f, ForceMode2D.Impulse);
             }
         }
 

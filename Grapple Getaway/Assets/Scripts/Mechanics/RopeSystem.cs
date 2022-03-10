@@ -125,10 +125,7 @@ namespace Platformer.Mechanics
             if (Input.GetMouseButton(0))
             {
                 if(cooldownTimer2 != 0)
-                {
-                    Debug.Log(cooldownTimer2);
                     return;
-                }
                 cooldownTimer2 = 1;
                 if (ropeAttached)
                     ResetRope("Cancel Swing Impulse");
@@ -164,10 +161,8 @@ namespace Platformer.Mechanics
 
             if (Input.GetMouseButton(1))
             {
-                if(cooldownTimer != 0) {
-                    Debug.Log(cooldownTimer);
+                if(cooldownTimer != 0) 
                     return;
-                }
                 cooldownTimer = maxGrappleCooldown;
                 reeling = true;
                 grappleTime = maxGrappleTime;
@@ -222,9 +217,6 @@ namespace Platformer.Mechanics
             if(grappleTime >= 0) {
                 Vector2 ropePosition = ropeHingeAnchorRb.transform.position;
                 Debug.Log(s);
-                // Debug.Log(grappleTime);
-                // Debug.Log(ropePosition);
-                // Debug.Log(playerPosition);
                 grappleTime = -1;
                 Vector2 playerPosition = transform.position;
                 Vector2 toAnchor = (ropePosition - playerPosition).normalized;

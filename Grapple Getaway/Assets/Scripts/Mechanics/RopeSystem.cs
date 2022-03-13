@@ -22,7 +22,7 @@ namespace Platformer.Mechanics
 
         public GameObject ropeHingeAnchor;
 
-        public GameObject particleSystem;
+        // public GameObject particleSystem;
         public DistanceJoint2D ropeJoint;
         public Transform crosshair;
         public SpriteRenderer crosshairSprite;
@@ -47,7 +47,7 @@ namespace Platformer.Mechanics
         Color defaultColor;
         Color defaultLineColor;
 
-        private ParticleSystem ps;
+        // private ParticleSystem ps;
 
         private int particleTimer;
         private const int particleDuration = 75;
@@ -62,9 +62,9 @@ namespace Platformer.Mechanics
             ropeHingeAnchorSprite = ropeHingeAnchor.GetComponent<SpriteRenderer>();
             sr = GetComponent<SpriteRenderer>();
             defaultColor = sr.color;
-            ps = particleSystem.GetComponent<ParticleSystem>(); // Stores the module in a local variable
-            var emission = ps.emission;
-            emission.enabled = false;
+            // ps = particleSystem.GetComponent<ParticleSystem>(); // Stores the module in a local variable
+            // var emission = ps.emission;
+            // emission.enabled = false;
         }
 
         void Update()
@@ -118,8 +118,8 @@ namespace Platformer.Mechanics
                 particleTimer -= 1;
                 if(particleTimer == 0)
                 {
-                    var emission = ps.emission;
-                    emission.enabled = false;
+                    // var emission = ps.emission;
+                    // emission.enabled = false;
                     sr.color = defaultColor; // Applies the new value directly to the Particle System
                 }
             }

@@ -21,6 +21,8 @@ namespace Platformer.Mechanics
         private bool reeling = false;
 
         public GameObject ropeHingeAnchor;
+
+        public GameObject particleSystem;
         public DistanceJoint2D ropeJoint;
         public Transform crosshair;
         public SpriteRenderer crosshairSprite;
@@ -41,6 +43,15 @@ namespace Platformer.Mechanics
 
         private bool distanceSet;
 
+        SpriteRenderer sr;
+        Color defaultColor;
+        Color defaultLineColor;
+
+        private ParticleSystem ps;
+
+        private int particleTimer;
+        private const int particleDuration = 75;
+
 
         void Awake()
         {
@@ -49,6 +60,11 @@ namespace Platformer.Mechanics
             playerPosition = transform.position;
             ropeHingeAnchorRb = ropeHingeAnchor.GetComponent<Rigidbody2D>();
             ropeHingeAnchorSprite = ropeHingeAnchor.GetComponent<SpriteRenderer>();
+            sr = GetComponent<SpriteRenderer>();
+            defaultColor = sr.color;
+            ps = particleSystem.GetComponent<ParticleSystem>(); // Stores the module in a local variable
+            var emission = ps.emission;
+            emission.enabled = false;
         }
 
         void Update()
@@ -88,6 +104,7 @@ namespace Platformer.Mechanics
             HandleInput(aimDirection);
             lastJump = Input.GetAxis("Jump");
             UpdateRopePositions();
+            UpdatePlayerColor();
             HandleRopeLength();
             if(grappleTime >= 0)
                 grappleTime -= 1;
@@ -96,6 +113,16 @@ namespace Platformer.Mechanics
             }
             if(cooldownTimer >= 1)
                 cooldownTimer -= 1;
+            if(particleTimer >= 1)
+            {
+                particleTimer -= 1;
+                if(particleTimer == 0)
+                {
+                    var emission = ps.emission;
+                    emission.enabled = false;
+                    sr.color = defaultColor; // Applies the new value directly to the Particle System
+                }
+            }
         }
 
         private void SetCrosshairPosition(float aimAngle)
@@ -110,6 +137,35 @@ namespace Platformer.Mechanics
 
             var crossHairPosition = new Vector3(x, y, 0);
             crosshair.transform.position = crossHairPosition;
+        }
+
+        private void particleEffect() {
+            // var emission = ps.emission;
+            // emission.enabled = true; // Applies the new value directly to the Particle System
+            // emission.rate = 4000;
+            // particleTimer = particleDuration;
+            // Debug.Log("Right?");
+            sr.color = Color.yellow;
+        }
+
+        private void UpdatePlayerColor() {
+            
+            float ratio = (float)(cooldownTimer * 1.0f / maxGrappleCooldown);
+            // Debug.Log($"{cooldownTimer}, {maxGrappleCooldown}, {ratio}");
+            sr.color = ratio * Color.red + (1.0f - ratio) * defaultColor;
+
+            if(ropeAttached && grappleTime == -1 && ropeHingeAnchorRb.transform.position.y < transform.position.y) {
+                 float x = transform.position.y - ropeHingeAnchorRb.transform.position.y;
+                 ratio = x / 2.0f;
+                 Color linecolor = ratio * Color.red + (1.0f - ratio) * Color.white;
+                 ropeRenderer.SetColors(linecolor,linecolor);
+            }
+
+            if(cooldownTimer == 1)
+                particleEffect();
+
+
+            
         }
 
         
@@ -197,6 +253,7 @@ namespace Platformer.Mechanics
         
         private void ResetRope(string s = "Anonymous Impulse")
         {
+            ropeRenderer.SetColors(Color.white,Color.white);
             reeling = false;
             // grappleTime = maxGrappleTime;
             ropeJoint.enabled = false;

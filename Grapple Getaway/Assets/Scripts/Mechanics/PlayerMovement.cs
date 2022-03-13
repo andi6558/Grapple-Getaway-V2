@@ -5,6 +5,7 @@ namespace Platformer.Mechanics
     public class PlayerMovement : MonoBehaviour
     {
         public Vector2 ropeHook;
+        float friction = 0.01f;
         public float swingForce = 4f;
         public float speed = 1f;
         public float jumpSpeed = 3f;
@@ -28,12 +29,13 @@ namespace Platformer.Mechanics
         {
             jumpInput = Input.GetAxis("Jump");
             horizontalInput = Input.GetAxis("Horizontal");
+            Debug.Log(horizontalInput);
             var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
 
             // int layerMask = (LayerMask.GetMask("Ground"));
             groundCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - halfHeight - 0.04f), Vector2.down, 0.025f);
 
-            float friction = 0.01f;
+           
 
 
             Vector2 antiVelocity;

@@ -29,7 +29,7 @@ namespace Platformer.Mechanics
         {
             jumpInput = Input.GetAxis("Jump");
             horizontalInput = Input.GetAxis("Horizontal");
-            Debug.Log(horizontalInput);
+
             var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
 
             // int layerMask = (LayerMask.GetMask("Ground"));
